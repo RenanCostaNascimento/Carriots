@@ -40,7 +40,18 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView3"
         android:layout_marginTop="14dp"
-        android:text="@string/btn"
-        android:onClick="sendStream" />
+        android:text="@string/btn_start"
+        android:onClick="startService" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/button1"
+        android:layout_marginTop="18dp"
+        android:text="@string/btn_stop" 
+        android:onClick="stopService" />
 
 </RelativeLayout>

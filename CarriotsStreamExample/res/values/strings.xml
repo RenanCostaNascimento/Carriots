@@ -7,6 +7,7 @@
     <string name="title">Push button</string>
     <string name="action">Send a stream to Carriots</string>
     <string name="question">Are you sure?</string>
-    <string name="btn">Send</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_stop">Stop</string>
 
 </resources>
