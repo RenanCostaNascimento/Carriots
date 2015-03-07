@@ -17,8 +17,18 @@ import android.os.AsyncTask;
 import android.text.format.Formatter;
 import android.util.Log;
 
+/**
+ * Classe que representa o BroadcastReceiver. Fica atrelado ao serviço,
+ * escutando eventos de mudanças de rede.
+ * 
+ * @author Renan
+ * 
+ */
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
+	/**
+	 * Método chamado quando algum evento que esteja sendo monitorado acontece.
+	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context
@@ -34,6 +44,12 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 	}
 
+	/**
+	 * Essa classe é a forma que o Android tem de criar uma tarefa assíncrona.
+	 * 
+	 * @author Renan
+	 * 
+	 */
 	private class ConnectToCarriots extends AsyncTask<WifiInfo, Void, Void> {
 
 		@Override
@@ -42,50 +58,48 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 			return null;
 		}
 
+		@SuppressWarnings("deprecation")
 		protected void sendData(WifiInfo data) {
-			String device = "RazrI@renancn.renancn";
+			String dispositivo = "RazrI@renancn.renancn";
 			String apikey = "22da2a360650481bd17039e0b18af5a4a77e620b4e006be3cb395b59c32be82a";
-			String request = "https://api.carriots.com/streams";
+			String requisicao = "https://api.carriots.com/streams";
 			String decodedString = "";
-			String returnMsg = "";
-			String writeOut = "";
+			String resposta = "";
+			String json = "";
 			URL url;
 			HttpURLConnection connection = null;
 			try {
-				url = new URL(request);
+				url = new URL(requisicao);
 				connection = (HttpURLConnection) url.openConnection();
-				// establish the parameters for the http post request
+				// adiciona parâmetros à requisição
 				connection.setDoOutput(true);
 				connection.addRequestProperty("carriots.apikey", apikey);
 				connection.addRequestProperty("Content-Type",
 						"application/json");
 				connection.setRequestMethod("POST");
-				// construct the json string to be sent
-				writeOut = "{" + "\"protocol\":\"v2\"," + "\"device\":\""
-						+ device + "\",\"at\":\"now\"," + "\"data\":{\"ssid\":"
+				// cria o json
+				json = "{" + "\"protocol\":\"v2\"," + "\"device\":\""
+						+ dispositivo + "\",\"at\":\"now\"," + "\"data\":{\"ssid\":"
 						+ data.getSSID() + ",\"ip\":\""
 						+ Formatter.formatIpAddress(data.getIpAddress())
-						+ "\"}}";
-				// create an output stream writer and write the json string to
-				// it
-				System.out.println(writeOut);
+						+ "\",\"email\":\"" + CarriotsService.email + "\"}}";
+				
 				final OutputStreamWriter osw = new OutputStreamWriter(
 						connection.getOutputStream());
-				osw.write(writeOut);
+				osw.write(json);
 				osw.close();
-				// create a buffered reader to interpret the incoming message
-				// from the carriots system
+				// interpreta a mensagem recebida do carriots
 				BufferedReader in = new BufferedReader(new InputStreamReader(
 						connection.getInputStream()));
 				while ((decodedString = in.readLine()) != null) {
-					returnMsg += decodedString;
+					resposta += decodedString;
 				}
 				in.close();
 				connection.disconnect();
 			} catch (Exception e) {
 				e.printStackTrace();
-				returnMsg = "" + e;
-				Log.d("Return_Message", returnMsg);
+				resposta = "" + e;
+				Log.d("Return_Message", resposta);
 			}
 		}
 
